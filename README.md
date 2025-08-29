@@ -1,72 +1,69 @@
 # ComfyUI-HunyuanVideoFoley
 
-一个将 [HunyuanVideo-Foley](https://github.com/Tencent-Hunyuan/HunyuanVideo-Foley) 推理功能集成到 ComfyUI 的插件，提供视频音频生成和合并功能。
+English | [简体中文](README.zh-CN.md)
 
-## 功能特性
+A ComfyUI custom node integrating the inference pipeline of [HunyuanVideo-Foley](https://github.com/Tencent-Hunyuan/HunyuanVideo-Foley), enabling audio generation from video + text prompts, plus audio-video merging utilities.
 
-- 🎵 **自动模型下载**: 首次使用时自动从 HuggingFace 下载所需模型文件
-- 🎬 **视频音频生成**: 基于视频内容和文本提示生成匹配的音频
-- 🔧 **音视频合并**: 将音频和视频合并为包含音轨的完整视频文件
+## Features
 
-## 节点说明
+- 🎵 Auto model download on first use (from Hugging Face)
+- 🎬 Video-aware audio generation guided by text prompts
+- 🔧 Audio-video merging to produce a final video with an audio track
 
-### 1. HunyuanVideo-Foley Generate Audio
-从视频和文本提示生成音频的核心节点。
+## Nodes
 
-**输入参数**:
-- `video`: VIDEO 类型（支持 LoadVideo 或 CreateVideo 输出）
-- `prompt`: 文本提示词，描述期望的音频效果
-- `model`: 模型配置选择（自动检测 models/hunyuan_foley 下的可用模型）
-- `guidance_scale`: 引导强度 (默认 4.5)
-- `num_inference_steps`: 推理步数 (默认 50)
-- `device`: 推理设备 (auto/cpu/cuda/mps)
-- `gpu_id`: CUDA 设备 ID
+### 1) HunyuanVideo-Foley Generate Audio
+Generate an AUDIO tensor from a VIDEO input and a text prompt.
 
-**输出**:
-- `audio`: AUDIO 类型，格式为 `{"waveform": [B=1, C=1, T], "sample_rate": int}`
+Inputs:
+- `video`: VIDEO (LoadVideo / CreateVideo output)
+- `prompt`: Text prompt describing the desired audio
+- `model`: Model setup (auto-detected under `models/hunyuan_foley`)
+- `guidance_scale`: Float, default 4.5
+- `num_inference_steps`: Int, default 50
+- `device`: auto/cpu/cuda/mps
+- `gpu_id`: CUDA device id
 
-### 2. Video Audio Merger
-将音频和视频合并为包含音轨的视频文件。
+Output:
+- `audio`: `{ "waveform": [B=1, C=1, T], "sample_rate": int }`
 
-**输入参数**:
-- `video`: VIDEO 类型输入视频
-- `audio`: AUDIO 类型输入音频
-- `audio_sync_mode`: 音频同步模式
-  - `stretch`: 拉伸音频匹配视频长度
-  - `loop`: 循环播放音频
-  - `truncate`: 截断音频
-  - `pad_silence`: 静音填充
-- `video_codec`: 视频编码器 (copy/libx264/libx265)
-- `audio_codec`: 音频编码器 (aac/mp3/copy)
-- `quality`: 输出质量 (high/medium/low)
+### 2) Video Audio Merger
+Merge AUDIO and VIDEO into a single video file with an audio track.
 
-**输出**:
-- `merged_video`: 合并后的 VIDEO 类型
+Inputs:
+- `video`: VIDEO input
+- `audio`: AUDIO input
+- `audio_sync_mode`:
+  - `stretch` | `loop` | `truncate` | `pad_silence`
+- `video_codec`: `copy` | `libx264` | `libx265`
+- `audio_codec`: `aac` | `mp3` | `copy`
+- `quality`: `high` | `medium` | `low`
 
-## 使用方法
+Output:
+- `merged_video`: VIDEO
 
-### 基本工作流
+## Quick Start
+
 ```
 LoadVideo → HunyuanVideoFoleyGenerateAudio → VideoAudioMerger → SaveVideo
-                    ↑                              ↑
-              文本提示词                        音频输入
+               ↑                                  ↑
+           text prompt                         audio input
 ```
 
-### 快速开始
-1. 加载视频文件 (LoadVideo)
-2. 使用 HunyuanVideo-Foley Generate Audio 生成音频
-3. 使用 Video Audio Merger 合并音视频
-4. 保存或预览最终视频
+1. Load a video (LoadVideo)
+2. Generate audio via "HunyuanVideo-Foley Generate Audio"
+3. Merge audio + video via "Video Audio Merger"
+4. Save or preview the final video
 
-## 安装依赖
+## Dependencies
 
 ```bash
-# 使用 ComfyUI 的 Python 环境
+# Use your ComfyUI Python environment
 D:\AI\ComfyUI-aki-v1.3\.ext\python.exe -m pip install ffmpeg-python
 ```
 
-## 注意事项
+## Notes
 
-- 首次使用会自动下载模型文件，请确保网络连接正常
-- 需要安装 ffmpeg 用于音视频处理
-- 推荐使用 CUDA 设备以获得更好的性能
+- On first run, models will be downloaded automatically (internet required)
+- FFmpeg is required for audio/video processing
+- CUDA is recommended for best performance

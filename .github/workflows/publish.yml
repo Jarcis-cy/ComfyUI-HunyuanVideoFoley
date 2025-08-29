@@ -1,0 +1,42 @@
+name: Publish ComfyUI Node
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install comfy-cli
+        run: |
+          python -m pip install --upgrade pip
+          pip install comfy-cli ruff
+
+      - name: Validate package
+        env:
+          PYTHONUTF8: '1'
+        run: |
+          python -m comfy_cli node validate
+
+      - name: Publish to Comfy Registry
+        if: ${{ success() }}
+        env:
+          PYTHONUTF8: '1'
+          REGISTRY_ACCESS_TOKEN: ${{ secrets.REGISTRY_ACCESS_TOKEN }}
+        run: |
+          python -m comfy_cli node publish --token "$REGISTRY_ACCESS_TOKEN"
+

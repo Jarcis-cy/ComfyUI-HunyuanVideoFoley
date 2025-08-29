@@ -19,6 +19,9 @@ tqdm
 pandas
 pyarrow
 
+# Audio/Video processing for VideoAudioMerger node
+ffmpeg-python
+
 # Optional but likely required by the project
 # timm
 # accelerate

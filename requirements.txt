@@ -1,0 +1,29 @@
+# This file lists the runtime dependencies for the HunyuanVideo-Foley wrapper node.
+# We DO NOT auto-install from code. Please install them into the ComfyUI Python env manually if missing.
+# Env Python: D:\AI\ComfyUI-aki-v1.3\.ext\python.exe
+
+# Minimal subset from HunyuanVideo-Foley/requirements.txt
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+numpy==1.26.4
+scipy
+pillow
+av
+einops
+pyyaml
+omegaconf
+easydict
+loguru
+tqdm
+pandas
+pyarrow
+
+# Optional but likely required by the project
+# timm
+# accelerate
+# diffusers
+# transformers @ v4.49.0-SigLIP-2
+# sentencepiece
+# audiotools (git)
+
